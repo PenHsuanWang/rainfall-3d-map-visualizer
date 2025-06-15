@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_BACKEND: ${{ github.repository_owner }}/rain-backend
+  IMAGE_FRONTEND: ${{ github.repository_owner }}/rain-frontend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint and Build
+        run: pnpm turbo run lint build
+
+      - name: Log in to GitHub Container Registry
+        env:
+          USERNAME: ${{ secrets.GHCR_USERNAME }}
+          TOKEN: ${{ secrets.GHCR_TOKEN }}
+        run: echo "$TOKEN" | docker login ${{ env.REGISTRY }} -u "$USERNAME" --password-stdin
+
+      - name: Build backend image
+        run: |
+          docker build \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest \
+            ./packages/backend
+
+      - name: Build frontend image
+        env:
+          VITE_MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
+        run: |
+          docker build \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest \
+            ./packages/frontend
+
+      - name: Push images
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
+
+      - name: Deploy (optional)
+        if: github.ref == 'refs/heads/main' && secrets.DEPLOY_SERVER != ''
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_SERVER }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            docker compose pull
+            docker compose up -d
