@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "rainfall-3d-histogram",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "turbo run build --filter=...",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint --parallel"
+  },
+  "devDependencies": {
+    "turbo": "^1.13.0",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,19 @@
+# docker-compose.yml (root, minimal)
+version: "3.9"
+services:
+  backend:
+    build: ./packages/backend
+    environment:
+      - CSV_FILE=/data/rainfall.csv
+    volumes:
+      - ./datasets:/data:ro
+    ports:
+      - "3000:3000"
+  frontend:
+    build: ./packages/frontend
+    environment:
+      - VITE_MAPBOX_TOKEN=${VITE_MAPBOX_TOKEN}
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
