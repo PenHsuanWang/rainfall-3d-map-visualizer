@@ -1,3 +1,9 @@
+import RainfallMap from "./components/RainfallMap";
+
 export default function App() {
-  return <h1 style={{ color: "green" }}>React is working!</h1>;
+  return (
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <RainfallMap />
+    </div>
+  );
 }

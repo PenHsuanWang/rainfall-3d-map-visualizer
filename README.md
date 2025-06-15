@@ -118,7 +118,7 @@ pnpm install
 Create `packages/backend/.env` (if needed) with:
 
 ```env
-CSV_FILE=/absolute/path/to/datasets/rainfall.csv
+CSV_FILE=data/rainfall.csv  # sample dataset included
 PORT=3000
 DATA_SOURCE=csv
 ```
@@ -156,6 +156,7 @@ Open <http://localhost:5173/> (use `/`, not `/index.html`).
 ### 5. Quick validation
 1. Navigate to <http://localhost:5173/>.
 2. Confirm the map loads and that `/api/rainfall` returns JSON.
+3. You should see three blue extruded bars from the sample dataset.
 
 ### 6. Production with Docker (optional)
 
@@ -175,8 +176,7 @@ The app will be available on ports 3000 and 5173.
 
 ```bash
 pnpm install
-pnpm --filter @rain/backend dev
-pnpm --filter @rain/frontend dev
+pnpm dev   # runs backend and frontend in parallel
 ```
 
 Once both are running, visit <http://localhost:5173/> to explore the rainfall histogram.
