@@ -25,6 +25,7 @@ A full-stack TypeScript monorepo that turns rainfall measurements into an intera
 - Modular Data Provider pattern – swap CSV, REST API, or DB with one line of config
 - Type-safe end-to-end (shared interfaces in packages/common)
 - Monorepo with Yarn/PNPM workspaces + Turborepo for fast builds
+- Upload new rainfall CSV directly from the web UI
 - Live-reload dev servers (`pnpm dev`)
 - Docker multi-stage images & docker-compose stack
 - GitHub Actions pipeline template (build ➜ test ➜ docker ➜ deploy)
@@ -157,6 +158,7 @@ Open <http://localhost:5173/> (use `/`, not `/index.html`).
 1. Navigate to <http://localhost:5173/>.
 2. Confirm the map loads and that `/api/rainfall` returns JSON.
 3. You should see three blue extruded bars from the sample dataset.
+4. Upload your own CSV via the form at the top of the page.
 
 ### 6. Production with Docker (optional)
 

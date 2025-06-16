@@ -6,3 +6,10 @@ export async function getRainfallData(): Promise<RainfallDataPoint[]> {
   if (!res.ok) throw new Error("Network error");
   return res.json();
 }
+
+export async function uploadCsv(file: File): Promise<void> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch("/api/upload", { method: "POST", body: formData });
+  if (!res.ok) throw new Error("Upload failed");
+}
