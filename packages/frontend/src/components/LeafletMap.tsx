@@ -16,12 +16,12 @@ function getRainfallRadius(value: number): number {
   return Math.max(8, Math.min(25, value / 8));
 }
 
-export default function LeafletMap() {
+export default function LeafletMap({ refreshToken }: { refreshToken?: number }) {
   const [data, setData] = useState<RainfallDataPoint[]>([]);
 
   useEffect(() => {
     getRainfallData().then(setData).catch(console.error);
-  }, []);
+  }, [refreshToken]);
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
